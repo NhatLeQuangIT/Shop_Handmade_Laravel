@@ -1,0 +1,67 @@
+@extends('user.layout')
+@section('content')
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>Danh sách sản phẩm yêu thích</h2>
+            <table class="table table-striped ">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Tên sản phẩm</th>
+                    <th>hình ảnh</th>
+                    <th>Giá tiền</th>
+                    <th>Lượt bán</th>
+                </tr>
+                </thead>
+                <tbody id="product_view">
+{{--                @if(isset($products))--}}
+{{--                    @foreach($products as $product)--}}
+{{--                        <tr>--}}
+{{--                            <td>#{{$product->id}}</td>--}}
+{{--                            <td>--}}
+{{--                                <a href="{{ route('get.detail.product',[$product->pro_slug,$product->id]) }}" target="_blank">{{ $product->pro_name }}</a>--}}
+{{--                            </td>--}}
+{{--                            <td>--}}
+{{--                                <img src="{{ asset(pare_url_file($product->pro_avatar)) }}" style="width: 100px;height: 100px;">--}}
+{{--                            </td>--}}
+{{--                            <td>{{ number_format($product->pro_price,0,',','.') }} VNĐ</td>--}}
+{{--                            <td>--}}
+{{--                                {{$product->pro_pay}}--}}
+{{--                            </td>--}}
+{{--                        </tr>--}}
+{{--                    @endforeach--}}
+{{--                @endif--}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+@stop
+@section('script')
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name = "csrf-token"]').attr('content')
+            }
+        });
+
+        let routeRenderProduct = '{{ route('post.product.view') }}';
+        let products = localStorage.getItem('products');
+        products = $.parseJSON(products)
+
+        if (products != null && products.length > 0)
+        {
+            $.ajax({
+                url : routeRenderProduct,
+                method : "POST",
+                data : { id : products},
+                success : function (result)
+                {
+                    $("#product_view").html('').append(result.data);
+                }
+            });
+        }
+    </script>
+@stop
+
+
